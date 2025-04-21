@@ -1,0 +1,77 @@
+EXPORT Lagrange_Interpol()
+BEGIN
+  // Declaración de variables locales
+  LOCAL X, Y, x, n, i, j, L, P;
+  LOCAL lx, eq, x1;
+
+  // ============================
+  // 1. Definición de datos
+  // ============================
+
+  // Lista de valores de x conocidos (X₀, X₁, ..., Xₙ)
+  X := {1, 2, 3}; // Puedes cambiar estos valores por los datos del problema
+
+  // Lista de valores de y correspondientes (Y₀, Y₁, ..., Yₙ)
+  Y := {2, 3, 5}; // Misma longitud que X. Y(i) es el valor f(X(i))
+
+  // Valor de x donde se quiere evaluar el polinomio interpolado
+  x := 2.5;
+
+  // Cantidad de puntos (n = número de elementos en X)
+  n := SIZE(X);
+
+  // ============================
+  // 2. Construcción simbólica del polinomio
+  // ============================
+
+  // lx será la variable simbólica (la letra 'x' en P(x))
+  lx := 'x';
+
+  // Inicialización del polinomio P(x)
+  P := 0;
+
+  // eq se usará para guardar la expresión simbólica completa de P(x)
+  eq := 0;
+
+  // ============================
+  // 3. Bucle externo: suma de términos de Lagrange
+  // ============================
+
+  FOR i FROM 1 TO n DO
+    // Inicializar el término de base Lᵢ(x) en 1
+    L := 1;
+
+    // Bucle interno: construir el producto de Lᵢ(x)
+    FOR j FROM 1 TO n DO
+      IF j ≠ i THEN
+        // Construir el término (x - xⱼ)/(xᵢ - xⱼ)
+        L := L * (lx - X(j)) / (X(i) - X(j));
+      END;
+    END;
+
+    // Agregar el término completo: Yᵢ * Lᵢ(x)
+    P := P + Y(i) * L;
+  END;
+
+  // ============================
+  // 4. Mostrar el polinomio en forma simbólica
+  // ============================
+
+  PRINT(); // Limpiamos Terminal
+  PRINT("Polinomio de Lagrange:");
+  PRINT("P(x) = ");
+  PRINT(expand(P)); // Muestra el polinomio expandido en términos de x
+
+  // ============================
+  // 5. Evaluar el polinomio en el punto x
+  // ============================
+
+  eq := P; // Guardamos la expresión simbólica
+  P := eval(eq); // Evaluamos la expresión  x = 2.5)
+
+  PRINT("");
+  PRINT("Evaluación en x = " + STRING(x) + ":");
+
+  PRINT("P(" + STRING(x) + ") = " + STRING(P)); // Valor evaluado
+
+END;
